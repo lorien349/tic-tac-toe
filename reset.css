@@ -1,0 +1,29 @@
+/*
+  Modern CSS Reset by Andy Bell
+  https://andy-bell.co.uk/a-modern-css-reset/
+*/
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
