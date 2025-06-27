@@ -7,6 +7,7 @@
 :root {
     font-size: 16px;
     font-family: "Roboto", sans-serif;
+    cursor: default;
 }
 
 header {
@@ -24,11 +25,34 @@ header {
     font-size: 2rem;
     font-weight: lighter;
     align-items: center;
+
+    > input[type="text"] {
+        width: 215px;
+        border: none;
+        padding: 0;
+        text-align: center;
+        background-color: transparent;
+    }
+
+    > input:focus{
+        outline: none;
+        color: rgba(0, 0, 0, 70%);
+    }
+
+    > input:hover {
+        text-decoration: underline;
+        color: rgba(0, 0, 0, 70%);
+    }
+
+    > input::after {
+        content: "aaa";
+    }
 }
 
-#first-player > p:last-child,
-#second-player > p:first-child {
+#first-player > input:last-child,
+#second-player > input:first-child {
     font-size: 3rem;
+    width: 35px;
 }
 
 header > div:nth-child(2) {
