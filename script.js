@@ -9,6 +9,7 @@ const Gameboard = (function() {
     const gameboard = document.getElementById("gameboard");
 
     const setRows = (rows) => {
+        gameboard.innerHTML = "";
         for (i = 0; i < rows**2; i++) {
             const box = document.createElement("button");
             box.classList.add("box");
@@ -17,6 +18,7 @@ const Gameboard = (function() {
             gameboard.appendChild(box);
         }
         gameboard.style.gridTemplateColumns = `repeat(${rows}, 1fr)`;
+        gameboard.style.fontSize = `${(548 / (rows*2))}px`;
     };
 
     const selectBox = (box) => {
@@ -58,7 +60,15 @@ const GameController = (function() {
 })();
 
 
-Gameboard.setRows(4);
+
+Gameboard.setRows(7);
 
 document.getElementById("gameboard").addEventListener("click", (e) => Gameboard.selectBox(e.target));
 document.getElementById("clear-btn").addEventListener("click", () => Gameboard.clearGameboard());
+document.getElementById("new-btn").addEventListener("click", () => {
+    let rows = 0;
+    while (!(rows >= 3 && rows < 8)) {
+        rows = prompt("Insert number of rows (between 3 and 7)");
+    }
+    Gameboard.setRows(rows);
+});
