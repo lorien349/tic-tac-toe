@@ -27,9 +27,18 @@ const Gameboard = (function() {
         }
     };
 
+    const clearGameboard = () => {
+        Array.from(gameboard.children).forEach((box) => {
+            box.classList.remove("player-1", "player-2");
+            box.textContent = "";
+        });
+        if (!(GameController.getCurrentPlayer() === firstPlayer)) GameController.playRound();
+    };
+
     return {
         setRows,
         selectBox,
+        clearGameboard,
     };
 })();
 
@@ -52,3 +61,4 @@ const GameController = (function() {
 Gameboard.setRows(4);
 
 document.getElementById("gameboard").addEventListener("click", (e) => Gameboard.selectBox(e.target));
+document.getElementById("clear-btn").addEventListener("click", () => Gameboard.clearGameboard());
