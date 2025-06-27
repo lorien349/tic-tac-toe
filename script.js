@@ -10,9 +10,25 @@ const Gameboard = (function() {
 
     const setRows = (rows) => {
         gameboard.innerHTML = "";
-        for (i = 0; i < rows**2; i++) {
+        for (i = 1; i < (rows**2)+1; i++) {
             const box = document.createElement("button");
+            box.setAttribute("id", i);
             box.classList.add("box");
+            if (i > 0 && i <= rows) {
+                box.classList.add("row-1");
+            } else if (i > rows && i <= rows*2) {
+                box.classList.add("row-2");
+            } else if (i > rows && i <= rows*3) {
+                box.classList.add("row-3");
+            } else if (i > rows && i <= rows*4) {
+                box.classList.add("row-4");
+            } else if (i > rows && i <= rows*5) {
+                box.classList.add("row-5");
+            } else if (i > rows && i <= rows*6) {
+                box.classList.add("row-6");
+            } else if (i > rows && i <= rows*7) {
+                box.classList.add("row-7");
+            }
             box.style.height = `${(548 / rows) - 2}px`;
             box.style.width = `${(548 / rows) - 2}px`;
             gameboard.appendChild(box);
@@ -25,7 +41,7 @@ const Gameboard = (function() {
         if (box.classList.contains("box") && !(box.classList.contains("player-1") || box.classList.contains("player-2"))) {
             box.classList.add(GameController.getCurrentPlayer() === firstPlayer ? "player-1" : "player-2")
             box.textContent = GameController.getCurrentPlayer().symbol;
-            GameController.playRound();
+            GameController.playRound(box);
         }
     };
 
@@ -47,7 +63,15 @@ const Gameboard = (function() {
 const GameController = (function() {
     let currentPlayer = firstPlayer;
 
-    const playRound = () => {
+    const playRound = (box) => {
+        try {
+            if ((box.className === document.getElementById(Number(box.id)+1).className && box.className === document.getElementById(Number(box.id)+2).className)
+                || (box.className === document.getElementById(Number(box.id)-1).className && box.className === document.getElementById(Number(box.id)+1).className)
+                || (box.className === document.getElementById(Number(box.id)-2).className && box.className === document.getElementById(Number(box.id)-1).className)) {
+                console.log("three in row");
+            }
+        } catch (e) {}
+
         currentPlayer = currentPlayer === firstPlayer ? secondPlayer : firstPlayer;
     };
 
@@ -61,7 +85,7 @@ const GameController = (function() {
 
 
 
-Gameboard.setRows(7);
+Gameboard.setRows(4);
 
 document.getElementById("gameboard").addEventListener("click", (e) => Gameboard.selectBox(e.target));
 document.getElementById("clear-btn").addEventListener("click", () => Gameboard.clearGameboard());
