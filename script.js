@@ -8,7 +8,12 @@ const secondPlayer = createPlayer("Player 2", "O");
 const Gameboard = (function() {
     const gameboard = document.getElementById("gameboard");
 
-    const setRows = (rows) => {
+    let rows = 4;
+
+    const getRows = () => rows;
+    const setRows = (n) => rows = n;
+
+    const buidGameboard = (rows) => {
         gameboard.innerHTML = "";
         for (i = 1; i < (rows**2)+1; i++) {
             const box = document.createElement("button");
@@ -54,9 +59,11 @@ const Gameboard = (function() {
     };
 
     return {
-        setRows,
+        buidGameboard,
         selectBox,
         clearGameboard,
+        setRows,
+        getRows,
     };
 })();
 
@@ -64,11 +71,20 @@ const GameController = (function() {
     let currentPlayer = firstPlayer;
 
     const playRound = (box) => {
+        let cls = currentPlayer === firstPlayer ? "player-1" : "player-2";
         try {
             if ((box.className === document.getElementById(Number(box.id)+1).className && box.className === document.getElementById(Number(box.id)+2).className)
                 || (box.className === document.getElementById(Number(box.id)-1).className && box.className === document.getElementById(Number(box.id)+1).className)
                 || (box.className === document.getElementById(Number(box.id)-2).className && box.className === document.getElementById(Number(box.id)-1).className)) {
-                console.log("three in row");
+                    console.log("three in row");
+            }
+        } catch (e) {}
+
+        try {
+            if ((box.classList.contains(cls) && document.getElementById(Number(box.id)+Gameboard.getRows()).classList.contains(cls) && document.getElementById(Number(box.id)+(Gameboard.getRows())*2).classList.contains(cls))
+                || (box.classList.contains(cls) && document.getElementById(Number(box.id)-Gameboard.getRows()).classList.contains(cls) && document.getElementById(Number(box.id)+(Gameboard.getRows())).classList.contains(cls))
+                || (box.classList.contains(cls) && document.getElementById(Number(box.id)-Gameboard.getRows()).classList.contains(cls) && document.getElementById(Number(box.id)-(Gameboard.getRows())*2).classList.contains(cls))) {
+                    console.log("three in column");
             }
         } catch (e) {}
 
@@ -85,7 +101,7 @@ const GameController = (function() {
 
 
 
-Gameboard.setRows(4);
+Gameboard.buidGameboard(Gameboard.getRows());
 
 document.getElementById("gameboard").addEventListener("click", (e) => Gameboard.selectBox(e.target));
 document.getElementById("clear-btn").addEventListener("click", () => Gameboard.clearGameboard());
@@ -95,4 +111,5 @@ document.getElementById("new-btn").addEventListener("click", () => {
         rows = prompt("Insert number of rows (between 3 and 7)");
     }
     Gameboard.setRows(rows);
+    Gameboard.buidGameboard(Gameboard.getRows());
 });
