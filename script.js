@@ -1,9 +1,35 @@
-function createPlayer(name, symbol) {
-    return { name, symbol };
-}
+const PlayerController = (function() {
+    const firstPlayer = {
+        name: "Player 1",
+        symbol: "X",
+    };
 
-const firstPlayer = createPlayer("Player 1", "X");
-const secondPlayer = createPlayer("Player 2", "O");
+    const secondPlayer = {
+        name: "Player 2",
+        symbol: "O",
+    };
+
+    const setFirstPlayer = (name, symbol) => {
+        firstPlayer.name = name;
+        firstPlayer.symbol = symbol;
+    };
+    const setSecondPlayer = (name, symbol) => {
+        secondPlayer.name = name;
+        secondPlayer. symbol = symbol;
+    };
+
+    const getFirstPlayer = () => firstPlayer;
+    const getSecondPlayer = () => secondPlayer;
+
+    return {
+        setFirstPlayer,
+        setSecondPlayer,
+        getFirstPlayer,
+        getSecondPlayer,
+    };
+})();
+
+
 
 const Gameboard = (function() {
     const gameboard = document.getElementById("gameboard");
@@ -23,7 +49,7 @@ const Gameboard = (function() {
 
     const selectBox = (box) => {
         if (box.classList.contains("box") && !(box.classList.contains("player-1") || box.classList.contains("player-2"))) {
-            box.classList.add(GameController.getCurrentPlayer() === firstPlayer ? "player-1" : "player-2")
+            box.classList.add(GameController.getCurrentPlayer() === PlayerController.getFirstPlayer() ? "player-1" : "player-2")
             box.textContent = GameController.getCurrentPlayer().symbol;
             GameController.playRound();
         }
@@ -34,7 +60,7 @@ const Gameboard = (function() {
             box.classList.remove("player-1", "player-2");
             box.textContent = "";
         });
-        if (!(GameController.getCurrentPlayer() === firstPlayer)) GameController.playRound();
+        if (!(GameController.getCurrentPlayer() === PlayerController.getFirstPlayer())) GameController.playRound();
     };
 
     return {
@@ -45,10 +71,10 @@ const Gameboard = (function() {
 })();
 
 const GameController = (function() {
-    let currentPlayer = firstPlayer;
+    let currentPlayer = PlayerController.getFirstPlayer();
 
     const playRound = () => {
-        currentPlayer = currentPlayer === firstPlayer ? secondPlayer : firstPlayer;
+        currentPlayer = currentPlayer === PlayerController.getFirstPlayer() ? PlayerController.getSecondPlayer() : PlayerController.getFirstPlayer();
     };
 
     const getCurrentPlayer = () => currentPlayer;
@@ -63,7 +89,13 @@ const GameController = (function() {
 
 Gameboard.setRows(7);
 
-document.getElementById("gameboard").addEventListener("click", (e) => Gameboard.selectBox(e.target));
+document.getElementById("gameboard").addEventListener("click", (e) => {
+    PlayerController.setFirstPlayer(document.getElementById("player-1-name").value,
+    document.getElementById("player-1-symbol").value);
+    PlayerController.setSecondPlayer(document.getElementById("player-2-name").value,
+    document.getElementById("player-2-symbol").value);
+    Gameboard.selectBox(e.target);
+});
 document.getElementById("clear-btn").addEventListener("click", () => Gameboard.clearGameboard());
 document.getElementById("new-btn").addEventListener("click", () => {
     let rows = 0;
