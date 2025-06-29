@@ -29,8 +29,6 @@ const PlayerController = (function() {
     };
 })();
 
-
-
 const Gameboard = (function() {
     const gameboard = document.getElementById("gameboard");
 
@@ -97,7 +95,7 @@ const GameController = (function() {
     let currentPlayer = PlayerController.getFirstPlayer();
 
     const playRound = (box) => {
-        let cls = currentPlayer === firstPlayer ? "player-1" : "player-2";
+        let cls = currentPlayer === PlayerController.getFirstPlayer() ? "player-1" : "player-2";
         try {
             if ((box.className === document.getElementById(Number(box.id)+1).className && box.className === document.getElementById(Number(box.id)+2).className)
                 || (box.className === document.getElementById(Number(box.id)-1).className && box.className === document.getElementById(Number(box.id)+1).className)
@@ -114,7 +112,7 @@ const GameController = (function() {
             }
         } catch (e) {}
 
-        currentPlayer = currentPlayer === firstPlayer ? secondPlayer : firstPlayer;
+        currentPlayer = currentPlayer === PlayerController.getFirstPlayer() ? PlayerController.getSecondPlayer() : PlayerController.getFirstPlayer();
     };
 
     const getCurrentPlayer = () => currentPlayer;
