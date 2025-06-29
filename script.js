@@ -76,7 +76,7 @@ const GameController = (function() {
             if ((box.className === document.getElementById(Number(box.id)+1).className && box.className === document.getElementById(Number(box.id)+2).className)
                 || (box.className === document.getElementById(Number(box.id)-1).className && box.className === document.getElementById(Number(box.id)+1).className)
                 || (box.className === document.getElementById(Number(box.id)-2).className && box.className === document.getElementById(Number(box.id)-1).className)) {
-                    console.log("three in row");
+                    WinScreen.open("row", currentPlayer.name);
             }
         } catch (e) {}
 
@@ -84,7 +84,7 @@ const GameController = (function() {
             if ((box.classList.contains(cls) && document.getElementById(Number(box.id)+Gameboard.getRows()).classList.contains(cls) && document.getElementById(Number(box.id)+(Gameboard.getRows())*2).classList.contains(cls))
                 || (box.classList.contains(cls) && document.getElementById(Number(box.id)-Gameboard.getRows()).classList.contains(cls) && document.getElementById(Number(box.id)+(Gameboard.getRows())).classList.contains(cls))
                 || (box.classList.contains(cls) && document.getElementById(Number(box.id)-Gameboard.getRows()).classList.contains(cls) && document.getElementById(Number(box.id)-(Gameboard.getRows())*2).classList.contains(cls))) {
-                    console.log("three in column");
+                    WinScreen.open("column", currentPlayer.name);
             }
         } catch (e) {}
 
@@ -97,6 +97,28 @@ const GameController = (function() {
         getCurrentPlayer,
         playRound,
     };
+})();
+
+const WinScreen = (function() {
+    const winScreen = document.getElementById("win-screen");
+    const winText = document.getElementById("win-text");
+    const winPlayer = document.getElementById("win-player");
+
+    const open = (winMethod, winner) => {
+        winText.textContent = `Three in ${winMethod}!!!`;
+        winPlayer.textContent = `${winner} wins`
+        winScreen.showModal();
+    };
+
+    const close = () => {
+        Gameboard.clearGameboard();
+        winScreen.close();
+    };
+
+    return {
+        open,
+        close,
+    }
 })();
 
 
@@ -113,3 +135,4 @@ document.getElementById("new-btn").addEventListener("click", () => {
     Gameboard.setRows(rows);
     Gameboard.buidGameboard(Gameboard.getRows());
 });
+document.getElementById("restart-btn").addEventListener("click", () => WinScreen.close());
