@@ -34,11 +34,32 @@ const PlayerController = (function() {
 const Gameboard = (function() {
     const gameboard = document.getElementById("gameboard");
 
-    const setRows = (rows) => {
+    let rows = 4;
+
+    const getRows = () => rows;
+    const setRows = (n) => rows = n;
+
+    const buidGameboard = (rows) => {
         gameboard.innerHTML = "";
-        for (i = 0; i < rows**2; i++) {
+        for (i = 1; i < (rows**2)+1; i++) {
             const box = document.createElement("button");
+            box.setAttribute("id", i);
             box.classList.add("box");
+            if (i > 0 && i <= rows) {
+                box.classList.add("row-1");
+            } else if (i > rows && i <= rows*2) {
+                box.classList.add("row-2");
+            } else if (i > rows && i <= rows*3) {
+                box.classList.add("row-3");
+            } else if (i > rows && i <= rows*4) {
+                box.classList.add("row-4");
+            } else if (i > rows && i <= rows*5) {
+                box.classList.add("row-5");
+            } else if (i > rows && i <= rows*6) {
+                box.classList.add("row-6");
+            } else if (i > rows && i <= rows*7) {
+                box.classList.add("row-7");
+            }
             box.style.height = `${(548 / rows) - 2}px`;
             box.style.width = `${(548 / rows) - 2}px`;
             gameboard.appendChild(box);
@@ -51,7 +72,7 @@ const Gameboard = (function() {
         if (box.classList.contains("box") && !(box.classList.contains("player-1") || box.classList.contains("player-2"))) {
             box.classList.add(GameController.getCurrentPlayer() === PlayerController.getFirstPlayer() ? "player-1" : "player-2")
             box.textContent = GameController.getCurrentPlayer().symbol;
-            GameController.playRound();
+            GameController.playRound(box);
         }
     };
 
@@ -64,17 +85,36 @@ const Gameboard = (function() {
     };
 
     return {
-        setRows,
+        buidGameboard,
         selectBox,
         clearGameboard,
+        setRows,
+        getRows,
     };
 })();
 
 const GameController = (function() {
     let currentPlayer = PlayerController.getFirstPlayer();
 
-    const playRound = () => {
-        currentPlayer = currentPlayer === PlayerController.getFirstPlayer() ? PlayerController.getSecondPlayer() : PlayerController.getFirstPlayer();
+    const playRound = (box) => {
+        let cls = currentPlayer === firstPlayer ? "player-1" : "player-2";
+        try {
+            if ((box.className === document.getElementById(Number(box.id)+1).className && box.className === document.getElementById(Number(box.id)+2).className)
+                || (box.className === document.getElementById(Number(box.id)-1).className && box.className === document.getElementById(Number(box.id)+1).className)
+                || (box.className === document.getElementById(Number(box.id)-2).className && box.className === document.getElementById(Number(box.id)-1).className)) {
+                    WinScreen.open("row", currentPlayer.name);
+            }
+        } catch (e) {}
+
+        try {
+            if ((box.classList.contains(cls) && document.getElementById(Number(box.id)+Gameboard.getRows()).classList.contains(cls) && document.getElementById(Number(box.id)+(Gameboard.getRows())*2).classList.contains(cls))
+                || (box.classList.contains(cls) && document.getElementById(Number(box.id)-Gameboard.getRows()).classList.contains(cls) && document.getElementById(Number(box.id)+(Gameboard.getRows())).classList.contains(cls))
+                || (box.classList.contains(cls) && document.getElementById(Number(box.id)-Gameboard.getRows()).classList.contains(cls) && document.getElementById(Number(box.id)-(Gameboard.getRows())*2).classList.contains(cls))) {
+                    WinScreen.open("column", currentPlayer.name);
+            }
+        } catch (e) {}
+
+        currentPlayer = currentPlayer === firstPlayer ? secondPlayer : firstPlayer;
     };
 
     const getCurrentPlayer = () => currentPlayer;
@@ -85,9 +125,31 @@ const GameController = (function() {
     };
 })();
 
+const WinScreen = (function() {
+    const winScreen = document.getElementById("win-screen");
+    const winText = document.getElementById("win-text");
+    const winPlayer = document.getElementById("win-player");
+
+    const open = (winMethod, winner) => {
+        winText.textContent = `Three in ${winMethod}!!!`;
+        winPlayer.textContent = `${winner} wins`
+        winScreen.showModal();
+    };
+
+    const close = () => {
+        Gameboard.clearGameboard();
+        winScreen.close();
+    };
+
+    return {
+        open,
+        close,
+    }
+})();
 
 
-Gameboard.setRows(7);
+
+Gameboard.buidGameboard(Gameboard.getRows());
 
 document.getElementById("gameboard").addEventListener("click", (e) => {
     PlayerController.setFirstPlayer(document.getElementById("player-1-name").value,
@@ -103,4 +165,6 @@ document.getElementById("new-btn").addEventListener("click", () => {
         rows = prompt("Insert number of rows (between 3 and 7)");
     }
     Gameboard.setRows(rows);
+    Gameboard.buidGameboard(Gameboard.getRows());
 });
+document.getElementById("restart-btn").addEventListener("click", () => WinScreen.close());
